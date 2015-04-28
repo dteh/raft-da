@@ -1,5 +1,8 @@
 package raft;
 
+import org.jgroups.*;
+
+
 public class Server {
 	// I think this is where the main entry point to the program should be
 	// Maybe all servers should run this file
