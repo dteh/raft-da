@@ -13,7 +13,7 @@ import org.jgroups.stack.IpAddress;
  * have joined the 'channel'. Saves list of IPs to a list. Rescans
  * for new addresses once every second
  *
- * 
+ * Address list can be called from the class var 'addresses' 
  */
 public class FindNodes {
 	JChannel channel;
