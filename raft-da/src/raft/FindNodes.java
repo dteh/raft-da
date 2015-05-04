@@ -1,7 +1,6 @@
 package raft;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Collections;
 import org.jgroups.*;
 import org.jgroups.stack.IpAddress;
 
@@ -15,16 +14,21 @@ import org.jgroups.stack.IpAddress;
  *
  * Address list can be called from the class var 'addresses' 
  */
-public class FindNodes {
+public class FindNodes implements Runnable{
 	JChannel channel;
 	List<String> tmpadd = new ArrayList<String>();
 	List<String> addresses = new ArrayList<String>();
 
 	
-	private void start() throws Exception{
-		channel = new JChannel();
-		channel.connect("ClusterChat");
-		getIPs();
+	public void run(){
+		try{
+			channel = new JChannel();
+			channel.connect("ClusterChat");
+			getIPs();
+		}
+		catch(Exception e){
+			System.out.println(e);
+		}
 	}
 	
 	public void kill(){
@@ -35,21 +39,13 @@ public class FindNodes {
 		while(true){
 			tmpadd.clear();
 			Thread.sleep(1000);
-			System.out.println(channel.getView().getMembers());
 			List<org.jgroups.Address> members = channel.getView().getMembers();
 			for (org.jgroups.Address member: members){
 				PhysicalAddress physicalAddr = (PhysicalAddress)channel.down(new Event(Event.GET_PHYSICAL_ADDRESS,member));
 				IpAddress ipAddr = (IpAddress)physicalAddr;
-				System.out.println(ipAddr.getIpAddress().getHostAddress());
 				tmpadd.add(ipAddr.getIpAddress().getHostAddress());
 			}
-			java.util.Collections.copy(addresses, tmpadd);
+			addresses = new ArrayList<String>(tmpadd);
 		}
 	}
-	
-	public static void main(String[] args) throws Exception{
-		new FindNodes().start();
-
-	}
-
 }
