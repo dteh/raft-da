@@ -9,8 +9,8 @@ public class Server {
 	private void init(){
 		addresses = new FindNodes();
 		new Thread(addresses).start();
+		MessageListener listen = new MessageListener(addresses.getChannel());
 		
-		state = new state.Follower();
 		
 		
 	}

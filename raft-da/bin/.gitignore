@@ -1,2 +1,3 @@
-/raft
-/state
+/raft/
+/state/
+/message/

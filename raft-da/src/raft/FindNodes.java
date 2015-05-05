@@ -19,11 +19,13 @@ public class FindNodes implements Runnable{
 	List<String> tmpadd = new ArrayList<String>();
 	List<String> addresses = new ArrayList<String>();
 
-	
+	public JChannel getChannel(){
+		return channel;
+	}
 	public void run(){
 		try{
 			channel = new JChannel();
-			channel.connect("ClusterChat");
+			channel.connect("raft");
 			getIPs();
 		}
 		catch(Exception e){
