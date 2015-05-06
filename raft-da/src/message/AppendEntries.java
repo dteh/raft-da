@@ -1,5 +1,8 @@
 package message;
 
-public class AppendEntries {
-	// Actions involved with an appendentries message
+public class AppendEntries extends RaftMessage{
+	public AppendEntries(){
+		name = "AppendEntries";
+	}
+	
 }

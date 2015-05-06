@@ -1,0 +1,36 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1345\cocoasubrtf380
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww18200\viewh11780\viewkind0
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
+
+\f0\fs24 \cf0 1. Client enters cluster\
+2. Client gets size of cluster and tips (jgroups)\
+\
+\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\
+3a. If cluster is non-zero, client queries a random ip from the group to see if they are the leader (jgroups)\
+	3a i. Response, yes or no, but here is the ip of the leader (jgroups)\
+3b. If cluster only consists of them, take leadership status\
+\
+4. Leader sends out heartbeat continuously, or message if a message is to be broadcast (jgroups)\
+\
+5. Followers receive messages and execute the contents of the message (jgroups)\
+	5b. Message types:\
+		AppendEntries\
+			empty (heartbeat)\
+			contains something (instruction)\
+		NewState (for when new leader takes over and propagates state?)\
+\
+6. If no heartbeat is present and follower times out, change state to candidate and call votes\
+\
+7. Take control as leader\
+\
+To do:\
+\
+3- Set up a listener so that each node is ready to receive messages\
+4 - need to write class to execute instructions received	\
+\
+notes ::\
+We don\'92t need to do anything with instructions, just expose them in a method so that the program calling the library can access the message.\
+\
+To propagate the state to new clients, we can ask the program developer to keep updating a state variable which our library can access and send that the new clients in thethe cluster}

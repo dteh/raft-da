@@ -1,5 +1,7 @@
 package message;
 
-public class Response {
-	// how a response is structured?
+public class Response extends RaftMessage{
+	public Response(){
+		name = "Response";
+	}
 }

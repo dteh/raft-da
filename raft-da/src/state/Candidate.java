@@ -1,6 +1,6 @@
 package state;
 
-public abstract class Candidate extends State {
+public class Candidate extends State {
 	public Candidate(){
 		State = "candidate";
 	}
