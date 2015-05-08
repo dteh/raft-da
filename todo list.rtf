@@ -4,13 +4,17 @@
 \paperw11900\paperh16840\margl1440\margr1440\vieww18200\viewh11780\viewkind0
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural
 
-\f0\fs24 \cf0 1. Client enters cluster\
-2. Client gets size of cluster and tips (jgroups)\
-\
+\f0\fs24 \cf0 1. Client enters cluster *DONE*\
+2. Client gets size of cluster and tips (jgroups) *DONE*\
 \'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\
 3a. If cluster is non-zero, client queries a random ip from the group to see if they are the leader (jgroups)\
-	3a i. Response, yes or no, but here is the ip of the leader (jgroups)\
+	3a i. Response, yes or no, but here is the ip of the leader (jgroups) *DONE*\
+\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\
 3b. If cluster only consists of them, take leadership status\
+	to do:\
+		Run timeout thread\
+		If timeout, send out vote requests with election ID (random string?)\
+		then.. how to handle vote quorums?\
 \
 4. Leader sends out heartbeat continuously, or message if a message is to be broadcast (jgroups)\
 \

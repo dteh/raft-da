@@ -22,6 +22,8 @@ public class SetChannel extends ReceiverAdapter implements Runnable{
 	List<String> tmpadd = new ArrayList<String>();
 	List<String> addresses = new ArrayList<String>();
 	static List<org.jgroups.Address> members;
+	static ReceiveMessage receiver = new ReceiveMessage();
+
 	
 	/**
 	 * Thread start procedure
@@ -47,12 +49,10 @@ public class SetChannel extends ReceiverAdapter implements Runnable{
 	public void receive(Message msg){
 		System.out.println("Received Something");
 		try{
-			message.RaftMessage m = (message.RaftMessage)msg.getObject();
-			System.out.println(m.name);
+			receiver.parse(msg);
 		}catch(Exception e){
 			System.out.println(e);
 		}
-			
 	}
 	
 	/**

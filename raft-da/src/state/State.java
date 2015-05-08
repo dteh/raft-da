@@ -29,7 +29,7 @@ public abstract class State {
 			current = System.currentTimeMillis();
 		}
 		if(current >= limit){
-			raft.Server.onTimeOut();
+			raft.RaftNode.onTimeOut();
 		}
 	}
 }
