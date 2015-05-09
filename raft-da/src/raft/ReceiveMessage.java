@@ -9,7 +9,7 @@ public class ReceiveMessage {
 	 */
 	public void parse(Message msg) throws Exception{
 		message.RaftMessage m = (message.RaftMessage)msg.getObject();
-
+		System.out.println(m.name);
 		if(m.name == "RequestLeader"){
 			ResponseLeader(msg.getSrc());
 		}
@@ -35,7 +35,7 @@ public class ReceiveMessage {
 			try{
 				byte[] buf = Util.objectToByteBuffer(new message.ResponseLeader(RaftNode.LEADER));
 				Message m = new Message(requester,buf);
-				SetChannel.channel.send(requester, m);
+				SetChannel.channel.send(m);
 			}catch(Exception e){
 				e.printStackTrace();
 			}

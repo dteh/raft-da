@@ -35,15 +35,24 @@ public class RaftNode {
 	public static org.jgroups.Address getLeader() throws Exception{
 		org.jgroups.Address clusterLeader = null;
 		JChannel c = SetChannel.channel;
-		if(SetChannel.members == null){
-			System.out.println("Waiting for cluster..");
-			Thread.sleep(200);
-			getLeader();
-		}else{
+		
+		// Figuring out who is the leader
+		while(true){
+			// Member list hasn't loaded yet
+			if(SetChannel.members == null){
+				System.out.println("Waiting for cluster..");
+				Thread.sleep(200);
+			// Only one member in cluster - make me the leader
+			}else if(SetChannel.members.size() == 1){
+				return SetChannel.members.get(0);
+			}
+			// Multiple members, send out a leader request
+			else{
 				byte[] buf = Util.objectToByteBuffer(new message.RequestLeader());
 				Message msg = new Message(null,null,buf);
 				c.send(msg);
-			
+				break;
+			}
 		}
 		return clusterLeader;
 	}

@@ -69,7 +69,7 @@ public class SetChannel extends ReceiverAdapter implements Runnable{
 	 */
 	private void getAddresses() throws Exception{
 		while(true){
-			Thread.sleep(1000);
+			Thread.sleep(200);
 			members = channel.getView().getMembers();
 			/*
 			 * This converts member IDs in cluster to IP addresses
