@@ -3,6 +3,7 @@ import org.jgroups.JChannel;
 import org.jgroups.Message;
 import org.jgroups.util.Util;
 
+import state.Candidate;
 import state.State;
 
 
@@ -10,11 +11,17 @@ public class RaftNode {
 	static long nextTimeOut;
 	static State state;
 	static org.jgroups.Address LEADER;
+	public static int currentTerm;
 	SetChannel addresses;
 
-	
+	/**
+	 * When timeout is triggered, initiate voting process
+	 */
 	public static void onTimeOut(){
 		state = new state.Candidate();
+		state.voteCount = 0;
+		((Candidate) state).sendVoteRequest();	
+		state.Candidate test = new state.Candidate();
 	}
 	
 	/**
@@ -23,9 +30,11 @@ public class RaftNode {
 	 * 		- Broadcast a request for the leader
 	 */
 	private void init() throws Exception{
+		currentTerm = 0;
 		addresses = new SetChannel();
 		new Thread(addresses).start();
 		Thread.sleep(500);
+		
 		LEADER = getLeader();
 	}
 	
@@ -48,9 +57,9 @@ public class RaftNode {
 			}
 			// Multiple members, send out a leader request
 			else{
-				byte[] buf = Util.objectToByteBuffer(new message.RequestLeader());
-				Message msg = new Message(null,null,buf);
-				c.send(msg);
+				//byte[] buf = Util.objectToByteBuffer(new message.RequestLeader());
+				//Message msg = new Message(null,null,buf);
+				c.send(null,new message.RequestLeader());
 				break;
 			}
 		}

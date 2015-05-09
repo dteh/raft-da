@@ -13,7 +13,7 @@ public class tests {
 			e.printStackTrace();
 		}
 		System.out.println("test");
-		
+		System.out.println(5/2);
 	}
 
 }

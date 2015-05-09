@@ -18,7 +18,7 @@ import org.jgroups.util.Util;
  */
 
 public class SetChannel extends ReceiverAdapter implements Runnable{
-	static JChannel channel;
+	public static JChannel channel;
 	List<String> tmpadd = new ArrayList<String>();
 	List<String> addresses = new ArrayList<String>();
 	static List<org.jgroups.Address> members;
