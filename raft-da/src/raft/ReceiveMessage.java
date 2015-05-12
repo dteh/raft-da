@@ -21,6 +21,7 @@ public class ReceiveMessage {
 		if(m.name.equals("ResponseLeader")){
 			RaftNode.LEADER = (Address)m.payload;
 			RaftNode.currentTerm = ((ResponseLeader)m).term;
+			RaftNode.state = new state.Follower();
 		}
 		/*
 		 *IF message received is a request for leadership:
@@ -55,10 +56,14 @@ public class ReceiveMessage {
 				RaftNode.state.voteCount += 1;
 			}
 			// If quorum is reached, broadcast that you are the leader
-			if(RaftNode.state.voteCount >= (SetChannel.members.size()/2)+1){
+			// The reason the threshold is not 1/2 + 1 because 1/2 assumes the node trying
+			// for leadership is voting for itself
+			if(RaftNode.state.voteCount >= (SetChannel.members.size()/2)){
 				if(RaftNode.broadcastLeaderThisTerm == false){
 					SetChannel.channel.send(null,new ResponseLeader(SetChannel.channel.getAddress()));
 					RaftNode.broadcastLeaderThisTerm = true;
+					System.out.println("I AM THE LEADER");
+					RaftNode.state = new state.Leader();
 				}
 			}
 		}

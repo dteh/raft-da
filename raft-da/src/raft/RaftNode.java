@@ -20,8 +20,12 @@ public class RaftNode {
 	public static int currentTerm;
 	public static boolean broadcastLeaderThisTerm;
 	public static Map<Integer, Boolean> voteLog;
+	public static long limit;
+
+	
 	private static Object logState;
 	private static Object nextAction;
+	private static boolean runningTimeout;
 	SetChannel addresses;
 	
 	public RaftNode(){
@@ -31,6 +35,11 @@ public class RaftNode {
 		voteLog = createLRUMap(20);
 		currentTerm = 0;
 		addresses = new SetChannel();
+		runningTimeout = false;
+	}
+	
+	public static boolean getTimeoutVar(){
+		return runningTimeout;
 	}
 	
 	public static void setStateObject(Object obj){
@@ -99,6 +108,7 @@ public class RaftNode {
 			}else if(SetChannel.members.size() == 1){
 				LEADER = SetChannel.members.get(0);
 				currentTerm = 1;
+				System.out.println("I AM THE LEADER");
 			}
 			// Multiple members, send out a leader request
 			else{
@@ -114,7 +124,6 @@ public class RaftNode {
 	public static void onTimeOut(){
 		state = new state.Candidate();
 		currentTerm += 1;
-		state.voteCount = 0;
 		((Candidate) state).sendVoteRequest();	
 	}
 	

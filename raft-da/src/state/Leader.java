@@ -1,9 +1,9 @@
 package state;
 
 
-public abstract class Leader extends State{
+public class Leader extends State{
 	public Leader(){
-		State = "leader";
+		State = "Leader";
 	}
 	// define how a leader should behave
 }
