@@ -38,10 +38,19 @@ public class RaftNode {
 		runningTimeout = false;
 	}
 	
+	/**
+	 * get/set whether the timeout thread should be active
+	 */
+	public static void setTimeoutVar(boolean v){
+		runningTimeout = v;
+	}
 	public static boolean getTimeoutVar(){
 		return runningTimeout;
 	}
 	
+	/**
+	 * get/set the object state to propagate to other nodes
+	 */
 	public static void setStateObject(Object obj){
 		logState = obj;
 	}
@@ -109,6 +118,7 @@ public class RaftNode {
 				LEADER = SetChannel.members.get(0);
 				currentTerm = 1;
 				System.out.println("I AM THE LEADER");
+				state = new state.Leader();
 			}
 			// Multiple members, send out a leader request
 			else{
@@ -118,7 +128,8 @@ public class RaftNode {
 		}
 	}
 	
-	/**
+	/**a
+	 * 
 	 * When timeout is triggered, initiate voting process
 	 */
 	public static void onTimeOut(){
