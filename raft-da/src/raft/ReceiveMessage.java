@@ -37,22 +37,23 @@ public class ReceiveMessage {
 				if(RaftNode.voteLog.containsKey((Integer)m.payload)){
 					if(RaftNode.voteLog.get((Integer)m.payload) == false){
 						//Send vote
-						SetChannel.channel.send(msg.getSrc(),new message.Vote());
+						SetChannel.channel.send(msg.getSrc(),new message.Vote((int)m.payload));
 					} //Else, don't send a vote
 				}else{
 					RaftNode.voteLog.put((Integer)m.payload, true);
 					//Send vote
-					SetChannel.channel.send(msg.getSrc(),new message.Vote());
+					SetChannel.channel.send(msg.getSrc(),new message.Vote((int)m.payload));
 				}
 			}
 		}
 		if(m.name.equals("AppendEntries")){
-			// do something
+			RaftNode.setStateObject(m.payload);
 		}
 		if(m.name.equals("Vote")){
 			//  Add a vote to tally if received
-			RaftNode.state.voteCount += 1;
-			
+			if((int)m.payload == RaftNode.currentTerm){
+				RaftNode.state.voteCount += 1;
+			}
 			// If quorum is reached, broadcast that you are the leader
 			if(RaftNode.state.voteCount >= (SetChannel.members.size()/2)+1){
 				if(RaftNode.broadcastLeaderThisTerm == false){
@@ -62,22 +63,5 @@ public class ReceiveMessage {
 			}
 		}
 		
-	}
-	
-	/**
-	 * If the node has a value for the leader, it will respond to the requester with
-	 * its value
-	 * @param requester - address to respond to
-	 */
-	private void ResponseLeader(Address requester){
-		if(RaftNode.LEADER != null){
-			try{
-				byte[] buf = Util.objectToByteBuffer(new ResponseLeader(RaftNode.LEADER));
-				Message m = new Message(requester,buf);
-				SetChannel.channel.send(m);
-			}catch(Exception e){
-				e.printStackTrace();
-			}
-		}
 	}
 }

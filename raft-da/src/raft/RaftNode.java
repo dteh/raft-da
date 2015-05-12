@@ -2,6 +2,8 @@ package raft;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import message.AppendEntries;
+
 import org.jgroups.JChannel;
 import org.jgroups.Address;
 import org.jgroups.Message;
@@ -18,8 +20,41 @@ public class RaftNode {
 	public static int currentTerm;
 	public static boolean broadcastLeaderThisTerm;
 	public static Map<Integer, Boolean> voteLog;
+	private static Object logState;
+	private static Object nextAction;
 	SetChannel addresses;
-
+	
+	public RaftNode(){
+		LEADER = null;
+		broadcastLeaderThisTerm = false;
+		currentTerm = 0;
+		voteLog = createLRUMap(20);
+		currentTerm = 0;
+		addresses = new SetChannel();
+	}
+	
+	public static void setStateObject(Object obj){
+		logState = obj;
+	}
+	public static Object getStateObject(){
+		return logState;
+	}
+	
+	/**
+	 * Propagate the server state.
+	 * The state object is set as the server's state object,
+	 * then broadcast.
+	 * @param stateObject
+	 */
+	public void sendState(Object stateObject){
+		logState = stateObject;
+		try{
+		SetChannel.channel.send(null, new AppendEntries(logState));
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+	}
+	
 	/**
 	 * (c) Peter Lawrey (StackOverflow)
 	 * 
@@ -30,15 +65,14 @@ public class RaftNode {
 	 * @param maxEntries
 	 * @return
 	 */
-	public static <Integer, Boolean> Map<Integer, Boolean> createLRUMap(final int maxEntries) {
-	    return new LinkedHashMap<Integer, Boolean>(maxEntries*10/7, 0.7f, true) {
+	public static <K, V> Map<K, V> createLRUMap(final int maxEntries) {
+	    return new LinkedHashMap<K, V>(maxEntries*10/7, 0.7f, true) {
 	        @Override
-	        protected boolean removeEldestEntry(Map.Entry<Integer, Boolean> eldest) {
+	        protected boolean removeEldestEntry(Map.Entry<K, V> eldest) {
 	            return size() > maxEntries;
 	        }
 	    };
 	}
-	
 	
 	/**
 	 * Startup process:
@@ -46,9 +80,6 @@ public class RaftNode {
 	 * 		- Broadcast a request for the leader
 	 */
 	private void init() throws Exception{
-		voteLog = createLRUMap(20);
-		currentTerm = 0;
-		addresses = new SetChannel();
 		new Thread(addresses).start();
 		Thread.sleep(500);
 		getLeader();
@@ -57,9 +88,7 @@ public class RaftNode {
 	/**
 	 * Broadcasts a request for the Leader's ID
 	 */
-	public static void getLeader() throws Exception{
-		JChannel c = SetChannel.channel;
-		
+	public static void getLeader() throws Exception{		
 		// Figuring out who is the leader
 		while(true){
 			// Member list hasn't loaded yet
@@ -73,7 +102,7 @@ public class RaftNode {
 			}
 			// Multiple members, send out a leader request
 			else{
-				c.send(null,new message.RequestLeader());
+				SetChannel.channel.send(null,new message.RequestLeader());
 				break;
 			}
 		}
@@ -93,19 +122,7 @@ public class RaftNode {
 		System.setProperty("java.net.preferIPv4Stack" , "true");
 		// uncomment and force address if not working
 		//System.setProperty("jgroups.bind_addr" , "192.168.2.17");
-		LEADER = null;
-		broadcastLeaderThisTerm = false;
-		currentTerm = 0;
 		RaftNode start = new RaftNode();
 		start.init();
-		/*
-		 * Prints list of nodes once per second
-		 */
-		/*while(true){
-			Thread.sleep(1000);
-			if (SetChannel.members != null){
-				System.out.println(SetChannel.members);
-			}
-		}*/
 	}
 }
