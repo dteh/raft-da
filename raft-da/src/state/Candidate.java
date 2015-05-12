@@ -1,14 +1,17 @@
 package state;
 
 import raft.RaftNode;
+import raft.TimeoutThread;
 
 public class Candidate extends State {
 	public Candidate(){
 		State = "Candidate";
 		voteCount = 0;
-		RaftNode.setTimeoutVar(false);
+		RaftNode.setTimeoutVar(true);
+		
+		Thread timeoutThread = new Thread(new TimeoutThread());
+		timeoutThread.start();
 	}
-	// Define how a candidate should be have & methods involved
 	
 	/**
 	 * Sends leadership request with current term to all nodes

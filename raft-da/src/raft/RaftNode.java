@@ -1,17 +1,10 @@
 package raft;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 import message.AppendEntries;
-
-import org.jgroups.JChannel;
-import org.jgroups.Address;
-import org.jgroups.Message;
-import org.jgroups.util.Util;
-
 import state.Candidate;
 import state.State;
-
 
 public class RaftNode {
 	static long nextTimeOut;
@@ -21,12 +14,13 @@ public class RaftNode {
 	public static boolean broadcastLeaderThisTerm;
 	public static Map<Integer, Boolean> voteLog;
 	public static long limit;
-
-	
-	private static Object logState;
-	private static Object nextAction;
 	private static boolean runningTimeout;
 	SetChannel addresses;
+	
+	// 
+	private static Object logState;
+	private static Object nextAction;
+	private static boolean newStateAvailable;
 	
 	public RaftNode(){
 		LEADER = null;
@@ -36,6 +30,17 @@ public class RaftNode {
 		currentTerm = 0;
 		addresses = new SetChannel();
 		runningTimeout = false;
+		newStateAvailable = false;
+	}
+	
+	/**
+	 * get/set whether a new instruction to be pushed to nodes (from leader)
+	 */
+	public static void setNewStateAvailable(boolean b){
+		newStateAvailable = b;
+	}
+	public static boolean getNewStateAvailable(){
+		return newStateAvailable;
 	}
 	
 	/**
@@ -128,14 +133,14 @@ public class RaftNode {
 		}
 	}
 	
-	/**a
+	/**
 	 * 
 	 * When timeout is triggered, initiate voting process
 	 */
 	public static void onTimeOut(){
 		state = new state.Candidate();
 		currentTerm += 1;
-		((Candidate) state).sendVoteRequest();	
+		((Candidate) state).sendVoteRequest();
 	}
 	
 	public static void main(String[] args) throws Exception{

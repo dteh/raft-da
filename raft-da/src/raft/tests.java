@@ -3,17 +3,12 @@ import org.jgroups.Address;
 import org.jgroups.util.*;
 
 public class tests {
-
+	static Object testobject;
 	public static void main(String[] args) {
-		Address TEST = null;
-		try{
-			byte[] buf = Util.objectToByteBuffer(TEST);
-			
-		}catch(Exception e){
-			e.printStackTrace();
-		}
-		System.out.println("test");
-		System.out.println(5/2);
+		testobject = "";
+		System.out.println(testobject);
+		System.out.println(testobject.equals(""));
+		System.out.println(testobject.getClass());
 	}
 
 }

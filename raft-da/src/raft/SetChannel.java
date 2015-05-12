@@ -1,10 +1,8 @@
 package raft;
-import message.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import org.jgroups.*;
-import org.jgroups.stack.IpAddress;
-import org.jgroups.util.Util;
 
 /**
  * 

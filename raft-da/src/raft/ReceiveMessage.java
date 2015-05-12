@@ -1,8 +1,8 @@
 package raft;
+
 import message.ResponseLeader;
 import org.jgroups.Message;
 import org.jgroups.Address;
-import org.jgroups.util.*;
 
 public class ReceiveMessage {
 	/*
@@ -48,12 +48,12 @@ public class ReceiveMessage {
 			}
 		}
 		if(m.name.equals("AppendEntries")){
-			// TODO: What to do when receiving a heartbeat instead of a state
-			
 			// reset timeout timer
 			raft.TimeoutThread.nextRandomTimeOut();
 			// set node state to that in the object
-			RaftNode.setStateObject(m.payload);
+			if(m.payload != null){
+				RaftNode.setStateObject(m.payload);
+			}
 		}
 		if(m.name.equals("Vote")){
 			//  Add a vote to tally if received
