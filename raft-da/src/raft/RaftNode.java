@@ -16,7 +16,7 @@ public class RaftNode {
 	public static int currentTerm;
 	public static boolean broadcastLeaderThisTerm;
 	public static Map<Integer, Boolean> voteLog;
-	public static long limit;
+	public static volatile long limit;
 	private static boolean runningTimeout;
 	SetChannel addresses;
 	

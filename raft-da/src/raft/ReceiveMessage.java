@@ -51,6 +51,7 @@ public class ReceiveMessage {
 		if(m.name.equals("AppendEntries")){
 			// reset timeout timer
 			raft.TimeoutThread.nextRandomTimeOut();
+
 			// set node state to that in the object
 			if(m.payload != null){
 				RaftNode.setStateObject(m.payload);
