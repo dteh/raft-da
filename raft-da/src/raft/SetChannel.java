@@ -41,11 +41,8 @@ public class SetChannel extends ReceiverAdapter implements Runnable{
 	
 	/**
 	 * Sets actions to perform on receive of message
-	 * todo: - Figure out what kind of object is received
-	 * 		 - deserialize
 	 */
 	public void receive(Message msg){
-		System.out.println("Received Something");
 		try{
 			receiver.parse(msg);
 		}catch(Exception e){

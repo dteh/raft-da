@@ -1,6 +1,7 @@
 package raft;
 
 import message.ResponseLeader;
+
 import org.jgroups.Message;
 import org.jgroups.Address;
 
@@ -10,7 +11,7 @@ public class ReceiveMessage {
 	 */
 	public void parse(Message msg) throws Exception{
 		message.RaftMessage m = (message.RaftMessage)msg.getObject();
-		System.out.println(m.name);
+		//System.out.println(m.name);
 		if(m.name.equals("RequestLeader")){
 			// If the node knows the leader
 			if(RaftNode.LEADER != null){
@@ -53,7 +54,7 @@ public class ReceiveMessage {
 			// set node state to that in the object
 			if(m.payload != null){
 				RaftNode.setStateObject(m.payload);
-			}
+			}else System.out.println("heartbeat");
 		}
 		if(m.name.equals("Vote")){
 			//  Add a vote to tally if received
@@ -67,11 +68,21 @@ public class ReceiveMessage {
 				if(RaftNode.broadcastLeaderThisTerm == false){
 					SetChannel.channel.send(null,new ResponseLeader(SetChannel.channel.getAddress()));
 					RaftNode.broadcastLeaderThisTerm = true;
-					System.out.println("I AM THE LEADER");
+					System.out.println("I AM THE LEADER FOR TERM" + RaftNode.currentTerm);
 					RaftNode.state = new state.Leader();
+					Thread leaderThread = new Thread(new LeaderThread());
+					leaderThread.start();
+					
 				}
 			}
 		}
-		
+		/**
+		 * When a node receives a log entry (presumed to be the leader),
+		 * it applies it to the state object;
+		 */
+		if(m.name.equals("LogEntry")){
+				RaftNode.apply.ApplyInstruction((m.payload));
+				RaftNode.setNewStateAvailable(true);
+		}
 	}
 }

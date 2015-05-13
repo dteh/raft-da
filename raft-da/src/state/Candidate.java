@@ -19,6 +19,7 @@ public class Candidate extends State {
 	public void sendVoteRequest(){
 		try{
 			raft.SetChannel.channel.send(null,new message.RequestVote(raft.RaftNode.currentTerm));
+			System.out.println(raft.RaftNode.currentTerm + " current term");
 		}catch(Exception e){
 			System.out.println(e);
 		}

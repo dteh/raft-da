@@ -1,14 +1,17 @@
 package raft;
 
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.Map;
+
+import raft.InstructionApplier;
 import message.AppendEntries;
 import state.Candidate;
 import state.State;
 
 public class RaftNode {
 	static long nextTimeOut;
-	static State state;
+	public static State state;
 	static org.jgroups.Address LEADER;
 	public static int currentTerm;
 	public static boolean broadcastLeaderThisTerm;
@@ -19,7 +22,8 @@ public class RaftNode {
 	
 	// 
 	private static Object logState;
-	private static Object nextAction;
+	public static LinkedList<Object> instructionQueue;
+	public static InstructionApplier apply;
 	private static boolean newStateAvailable;
 	
 	public RaftNode(){
@@ -102,7 +106,7 @@ public class RaftNode {
 	 * 		- Get available nodes
 	 * 		- Broadcast a request for the leader
 	 */
-	private void init() throws Exception{
+	void init() throws Exception{
 		new Thread(addresses).start();
 		Thread.sleep(500);
 		getLeader();
@@ -124,6 +128,9 @@ public class RaftNode {
 				currentTerm = 1;
 				System.out.println("I AM THE LEADER");
 				state = new state.Leader();
+				Thread leaderThread = new Thread(new LeaderThread());
+				leaderThread.start();
+				break;
 			}
 			// Multiple members, send out a leader request
 			else{
@@ -143,8 +150,10 @@ public class RaftNode {
 		((Candidate) state).sendVoteRequest();
 	}
 	
+	// XXX: COMMENT THIS OUT WHEN COMPILING AS A LIBRARY (THERE SHOULD BE NO MAIN)
 	public static void main(String[] args) throws Exception{
 		System.setProperty("java.net.preferIPv4Stack" , "true");
+		RaftNode.setStateObject("");
 		// uncomment and force address if not working
 		//System.setProperty("jgroups.bind_addr" , "192.168.2.17");
 		RaftNode start = new RaftNode();

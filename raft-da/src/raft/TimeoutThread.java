@@ -15,7 +15,13 @@ public class TimeoutThread implements Runnable{
 	 * @return
 	 */
 	static int nextRandomTimeOut(){
-		int nextTimeOut = new Random().nextInt(150) + 150;
+		int nextTimeOut = new Random().nextInt(150) + 1000;
+		RaftNode.limit = System.currentTimeMillis() + nextTimeOut;
+		return nextTimeOut;
+	}
+	
+	static int nextRandomTimeOut(int i){
+		int nextTimeOut = new Random().nextInt(150) + i;
 		RaftNode.limit = System.currentTimeMillis() + nextTimeOut;
 		return nextTimeOut;
 	}
@@ -28,6 +34,8 @@ public class TimeoutThread implements Runnable{
 	void timerCountDown(){
 		while(RaftNode.getTimeoutVar()){
 			if(System.currentTimeMillis() >= RaftNode.limit && RaftNode.getTimeoutVar()){
+				raft.RaftNode.setTimeoutVar(false);
+				nextRandomTimeOut();
 				raft.RaftNode.onTimeOut();
 			}
 		}
