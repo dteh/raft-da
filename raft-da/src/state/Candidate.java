@@ -1,8 +1,27 @@
 package state;
 
-public abstract class Candidate extends State {
+import raft.RaftNode;
+import raft.TimeoutThread;
+
+public class Candidate extends State {
 	public Candidate(){
-		State = "candidate";
+		State = "Candidate";
+		voteCount = 0;
+		RaftNode.setTimeoutVar(true);
+		
+		Thread timeoutThread = new Thread(new TimeoutThread());
+		timeoutThread.start();
 	}
-	// Define how a candidate should be have & methods involved
+	
+	/**
+	 * Sends leadership request with current term to all nodes
+	 */
+	public void sendVoteRequest(){
+		try{
+			raft.SetChannel.channel.send(null,new message.RequestVote(raft.RaftNode.currentTerm));
+			System.out.println(raft.RaftNode.currentTerm + " current term");
+		}catch(Exception e){
+			System.out.println(e);
+		}
+	}
 }

@@ -1,17 +1,14 @@
 package state;
 
-public abstract class Follower extends State{
+import raft.RaftNode;
+import raft.TimeoutThread;
+
+public class Follower extends State{
 	public Follower(){
-		State = "follower";
-	}
-	
-	public String AppendEntries(String m){
-		if(m.equals("")){
-			nextRandomTimeOut();
-		}
-		else{
-			return m; //Return message to the program implementing library
-		}
-		return "";
+		State = "Follower";
+		RaftNode.setTimeoutVar(true);
+
+		Thread timeoutThread = new Thread(new TimeoutThread());
+		timeoutThread.start();
 	}
 }
