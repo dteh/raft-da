@@ -13,6 +13,7 @@ public class LeaderThread implements Runnable{
 	 * @param obj - object to push to nodes
 	 */
 	public void run(){
+		System.out.println("Leader Thread started");
 		while(RaftNode.state.State.equals("Leader")){
 			try{
 				Thread.sleep(80);

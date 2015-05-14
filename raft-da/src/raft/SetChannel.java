@@ -43,6 +43,7 @@ public class SetChannel extends ReceiverAdapter implements Runnable{
 	 * Sets actions to perform on receive of message
 	 */
 	public void receive(Message msg){
+		
 		try{
 			receiver.parse(msg);
 		}catch(Exception e){
