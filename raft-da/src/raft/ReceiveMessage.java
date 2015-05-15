@@ -22,7 +22,10 @@ public class ReceiveMessage {
 		if(m.name.equals("ResponseLeader")){
 			RaftNode.LEADER = (Address)m.payload;
 			RaftNode.currentTerm = ((ResponseLeader)m).term;
-			RaftNode.state = new state.Follower();
+			// If already a follower, do not recreate object
+			if(!RaftNode.state.State.equals("Follower")){
+				RaftNode.state = new state.Follower();
+			}
 		}
 		/*
 		 *IF message received is a request for leadership:
