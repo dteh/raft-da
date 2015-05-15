@@ -32,16 +32,15 @@ public class TimeoutThread implements Runnable{
 	 * @param timeOut
 	 */
 	void timerCountDown(){
+		if(RaftNode.getTimeoutVar())
+			System.out.println("Timeout Running");
 		while(RaftNode.getTimeoutVar()){
-			long x = (Long)System.currentTimeMillis();
-			if(x > RaftNode.limit && RaftNode.getTimeoutVar()){
-				System.out.println(x);
-				System.out.println(RaftNode.limit + " THIS SHOULD BE LESS THAN"); //XXX
-				System.out.println(System.currentTimeMillis() + " THIS"); //XXX
+			if(System.currentTimeMillis() > RaftNode.limit && RaftNode.getTimeoutVar()){
 				System.out.println("TIMED OUT");
 				raft.RaftNode.setTimeoutVar(false);
 				nextRandomTimeOut();
 				raft.RaftNode.onTimeOut();
+				break;
 			}
 		}
 	}
