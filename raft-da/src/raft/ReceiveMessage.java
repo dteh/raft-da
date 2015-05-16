@@ -24,7 +24,7 @@ public class ReceiveMessage {
 			RaftNode.LEADER = (Address) m.payload;
 			RaftNode.currentTerm = ((ResponseLeader) m).term;
 			// If already a follower, do not recreate object
-			if (!RaftNode.state.State.equals("Follower")) {
+			if (!RaftNode.state.State.equals("Follower") && msg.getSrc() != SetChannel.channel.getAddress()) {
 				RaftNode.state = new state.Follower();
 			}
 		}
@@ -52,9 +52,7 @@ public class ReceiveMessage {
 			}
 		}
 		if (m.name.equals("AppendEntries")) {
-			// reset timeout timer
-			raft.TimeoutThread.nextRandomTimeOut();
-
+			
 			// set node state to that in the object
 			if (m.payload != null) {
 				RaftNode.setStateObject(m.payload);

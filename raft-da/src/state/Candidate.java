@@ -8,7 +8,6 @@ public class Candidate extends State {
 		State = "Candidate";
 		voteCount = 0;
 		RaftNode.setTimeoutVar(true);
-		System.out.println("Sou Candidate");
 		//Thread timeoutThread = new Thread(new TimeoutThread());
 		//timeoutThread.start();
 	}

@@ -134,6 +134,7 @@ public class RaftNode {
 			}
 			// Multiple members, send out a leader request
 			else{
+				RaftNode.state = new state.Follower();
 				SetChannel.channel.send(null,new message.RequestLeader());
 				break;
 			}
