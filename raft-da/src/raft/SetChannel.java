@@ -26,7 +26,7 @@ public class SetChannel extends ReceiverAdapter implements Runnable {
 	public void run() {
 		try {
 			channel = new JChannel();
-			channel.connect("raft");
+			channel.connect(RaftNode.clusterName);
 			channel.setReceiver(this);
 			System.out.println(channel.getView().getMembers());
 			getAddresses();

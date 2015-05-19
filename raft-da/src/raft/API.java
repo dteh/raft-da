@@ -21,10 +21,10 @@ public class API {
 	 * @param applier
 	 * @throws Exception
 	 */
-	public static void init(InstructionApplier applier) throws Exception{
+	public static void init(InstructionApplier applier, String clustername) throws Exception{
 		RaftNode start = new RaftNode();
 		RaftNode.apply = applier;
-		start.init();
+		start.init(clustername);
 	}
 	
 	/**

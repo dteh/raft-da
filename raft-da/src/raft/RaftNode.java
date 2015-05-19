@@ -10,6 +10,7 @@ import state.Candidate;
 import state.State;
 
 public class RaftNode {
+	static String clusterName;
 	static long nextTimeOut;
 	public static State state;
 	static org.jgroups.Address LEADER;
@@ -106,8 +107,9 @@ public class RaftNode {
 	 * 		- Get available nodes
 	 * 		- Broadcast a request for the leader
 	 */
-	void init() throws Exception{
+	void init(String clustername) throws Exception{
 		new Thread(addresses).start();
+		clusterName = clustername;
 		Thread.sleep(500);
 		getLeader();
 	}
@@ -158,6 +160,6 @@ public class RaftNode {
 		// uncomment and force address if not working
 		//System.setProperty("jgroups.bind_addr" , "192.168.2.17");
 		RaftNode start = new RaftNode();
-		start.init();
+		start.init("raft");
 	}
 }

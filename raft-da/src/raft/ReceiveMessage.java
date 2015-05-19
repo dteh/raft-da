@@ -27,6 +27,7 @@ public class ReceiveMessage {
 			if (!RaftNode.state.State.equals("Follower") && msg.getSrc() != SetChannel.channel.getAddress()) {
 				RaftNode.state = new state.Follower();
 			}
+			System.out.println("Connected to leader: " + m.payload);
 		}
 		/*
 		 * IF message received is a request for leadership: - If it is a new
