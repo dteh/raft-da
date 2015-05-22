@@ -20,6 +20,8 @@ public class RaftNode {
 	public static volatile long limit;
 	private static boolean runningTimeout;
 	SetChannel addresses;
+	public static boolean iAmLeader;
+	public static String myAddress;
 	
 	// 
 	private static Object logState;
@@ -112,6 +114,7 @@ public class RaftNode {
 		clusterName = clustername;
 		Thread.sleep(500);
 		getLeader();
+		myAddress = SetChannel.channel.getAddressAsString();
 	}
 	
 	/**
@@ -126,12 +129,14 @@ public class RaftNode {
 				Thread.sleep(200);
 			// Only one member in cluster - make me the leader
 			}else if(SetChannel.members.size() == 1){
+				iAmLeader = false;
 				LEADER = SetChannel.members.get(0);
 				currentTerm = 1;
 				System.out.println("I AM THE LEADER");
 				state = new state.Leader();
 				Thread leaderThread = new Thread(new LeaderThread());
 				leaderThread.start();
+				iAmLeader = true;
 				break;
 			}
 			// Multiple members, send out a leader request

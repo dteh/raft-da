@@ -1,14 +1,18 @@
 package raft;
 
-public class tests {
+import java.util.HashMap;
+import java.util.Map;
 
+public class tests {
+	static HashMap<String,Integer> a;
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		long a = 500;
-		int b = 5;
-		System.out.println(a+b);
-		System.out.println(System.currentTimeMillis());
-		System.out.println(System.currentTimeMillis()+a+b);
+		a = new HashMap<String,Integer>();
+		a.put("a",4);
+		a.put("a",3);
+		
+		System.out.println(a.get("b"));
+
 	}
 
 }

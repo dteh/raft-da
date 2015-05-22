@@ -1,5 +1,6 @@
 package raft;
 
+import message.AppendEntries;
 import message.ResponseLeader;
 
 import org.jgroups.Message;
@@ -18,6 +19,7 @@ public class ReceiveMessage {
 				// Send back to the source of the msg, the leader value
 				SetChannel.channel.send(msg.getSrc(), new ResponseLeader(
 						RaftNode.LEADER));
+				SetChannel.channel.send(msg.getSrc(), new AppendEntries(RaftNode.getStateObject()));
 			}
 		}
 		if (m.name.equals("ResponseLeader")) {
@@ -26,6 +28,7 @@ public class ReceiveMessage {
 			// If already a follower, do not recreate object
 			if (!RaftNode.state.State.equals("Follower") && msg.getSrc() != SetChannel.channel.getAddress()) {
 				RaftNode.state = new state.Follower();
+				RaftNode.iAmLeader = false;
 			}
 			System.out.println("Connected to leader: " + m.payload);
 		}
@@ -57,6 +60,7 @@ public class ReceiveMessage {
 			// set node state to that in the object
 			if (m.payload != null) {
 				RaftNode.setStateObject(m.payload);
+				System.out.println("new payload recv");
 			}// else System.out.println("heartbeat");
 		}
 		if (m.name.equals("Vote")) {
@@ -78,6 +82,7 @@ public class ReceiveMessage {
 					RaftNode.state = new state.Leader();
 					Thread leaderThread = new Thread(new LeaderThread());
 					leaderThread.start();
+					RaftNode.iAmLeader = true;
 
 				}
 			}
