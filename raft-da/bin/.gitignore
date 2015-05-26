@@ -1,4 +1,5 @@
-/raft/
+/.DS_Store
 /README.TXT
 /message/
+/raft/
 /state/

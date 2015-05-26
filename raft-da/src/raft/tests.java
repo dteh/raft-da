@@ -1,7 +1,6 @@
 package raft;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class tests {
 	static HashMap<String,Integer> a;

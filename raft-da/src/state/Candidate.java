@@ -1,7 +1,6 @@
 package state;
 
 import raft.RaftNode;
-import raft.TimeoutThread;
 
 public class Candidate extends State {
 	public Candidate(){

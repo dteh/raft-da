@@ -1,7 +1,5 @@
 package raft;
 
-import java.util.NoSuchElementException;
-
 import raft.RaftNode;
 import raft.InstructionApplier;
 
